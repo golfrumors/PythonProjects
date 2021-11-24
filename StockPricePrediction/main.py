@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import pandas_datareader as web
+from pandas_datareader import data as pdr
+import yfinance as yfin
 import datetime as dt
 
 from sklearn.preprocessing import MinMaxScaler
@@ -11,11 +13,13 @@ from tensorflow.keras.layers import Dense, Dropout, LSTM
 # loading data
 company = 'AAPL'
 
-#sets the time framme from which we will gget the data
-start = dt.datetime(2019,1,1)
-end = dt.datetime(2021,1,1)
+yfin.pdr_override()
 
-data = web.DataReader(company, 'yahoo', start, end)
+#sets the time framme from which we will gget the data
+start = dt.datetime(2018,1,1)
+end = dt.datetime.now()
+
+data = pdr.get_data_yahoo(company, start, end)
 
 # prep data
 scaler = MinMaxScaler(feature_range=(0,1))
@@ -48,14 +52,14 @@ model.add(Dropout(0.2))
 model.add(Dense(units=1)) #prediction of the next closing value
 
 model.compile(optimizer='adam', loss='mean_squared_error')
-model.fit(x_train, y_train, epochs=12, batch_size=32) #means it sees the data 24 times, 32 units at once
+model.fit(x_train, y_train, epochs=24, batch_size=64) #means it sees the data 24 times, 32 units at once
 
 ''' Test The Model Accuracy on Existing Data '''
 #load test data
 test_start = dt.datetime(2020,1,1)
 test_end = dt.datetime.now()
 
-test_data = web.DataReader(company, 'yahoo', test_start, test_end)
+test_data = pdr.get_data_yahoo(company, test_start, test_end)
 actual_prices = test_data['Close'].values
 
 total_dataset = pd.concat((data['Close'], test_data['Close']), axis=0)
