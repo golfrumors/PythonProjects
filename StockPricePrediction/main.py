@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import pandas_datareader as web
 from pandas_datareader import data as pdr
 import yfinance as yfin
 import datetime as dt
@@ -52,7 +51,7 @@ model.add(Dropout(0.2))
 model.add(Dense(units=1)) #prediction of the next closing value
 
 model.compile(optimizer='adam', loss='mean_squared_error')
-model.fit(x_train, y_train, epochs=24, batch_size=64) #means it sees the data 24 times, 32 units at once
+model.fit(x_train, y_train, epochs=24, batch_size=64) #means it sees the data 24 times, 64 units at once
 
 ''' Test The Model Accuracy on Existing Data '''
 #load test data
